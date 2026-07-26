@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { ArrowLeft, Camera } from 'lucide-react';
 import FlooringContactSection from './FlooringContactSection';
 import { displayLabel } from '../../../utils/display';
+import { colorSwatchHex } from '../../../utils/colorSwatch';
 
 const scrollToContactForm = () => {
   document.getElementById('flooring-contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -18,16 +19,22 @@ const FlooringProductDetailSection = memo(
     getProductSpecs,
     tabDescriptions,
     tabColorLabels,
-    floorSwatches,
-    wallSwatches,
   }) => {
     const [activeThumb, setActiveThumb] = useState(0);
+    const [selectedColor, setSelectedColor] = useState('');
 
     useEffect(() => {
       if (window.location.hash === '#flooring-contact') {
         scrollToContactForm();
       }
     }, [product.id]);
+
+    const colorNames = product.colors?.length ? product.colors : [];
+    const shadeNames = product.shades?.length ? product.shades : [];
+
+    useEffect(() => {
+      setSelectedColor(colorNames[0] ?? '');
+    }, [product.id, colorNames.join('|')]);
 
     const relatedProducts = allTabProducts
       .filter((item) => item.id !== product.id)
@@ -41,12 +48,12 @@ const FlooringProductDetailSection = memo(
     const specs = product.specRows?.length ? product.specRows : getProductSpecs(product, tab);
     const description = product.description || tabDescriptions[tab];
     const colorLabel = tabColorLabels[tab];
-    const colorValue = product.primaryColor || product.colors?.[0] || '—';
-
-    const showFloorSwatches = tab === 'floors';
-    const showWallSwatches = tab === 'walls';
-    const showCountertopSwatches = tab === 'countertops';
-    const countertopSwatchImages = allTabProducts.map((item) => item.image);
+    const colorValue = selectedColor || colorNames.join(', ') || product.primaryColor || '—';
+    const swatchLayoutClass =
+      tab === 'walls'
+        ? 'flex gap-3'
+        : 'grid grid-cols-3 gap-3 sm:grid-cols-6';
+    const swatchItemClass = tab === 'walls' ? 'h-20 flex-1 rounded' : 'h-20 rounded';
 
     return (
       <div className=" bg-white">
@@ -112,52 +119,34 @@ const FlooringProductDetailSection = memo(
                 {colorLabel}: {colorValue}
               </p>
 
-              {showFloorSwatches && (
-                <div className="flex flex-col gap-3">
-                  {[0, 1, 2].map((row) => (
-                    <div key={row} className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-                      {floorSwatches
-                        .slice(row * 6, row * 6 + (row === 2 ? floorSwatches.length - 12 : 6))
-                        .map((cls, colorIndex) => (
-                          <button
-                            key={colorIndex}
-                            type="button"
-                            aria-label={`Color option ${row * 6 + colorIndex + 1}`}
-                            className={`h-20 rounded ${cls}`}
-                          />
-                        ))}
-                    </div>
-                  ))}
+              {colorNames.length > 0 && (
+                <div className={swatchLayoutClass}>
+                  {colorNames.map((color) => {
+                    const isSelected = selectedColor === color;
+                    return (
+                      <button
+                        key={color}
+                        type="button"
+                        aria-label={color}
+                        aria-pressed={isSelected}
+                        title={color}
+                        onClick={() => setSelectedColor(color)}
+                        className={`${swatchItemClass} border transition-shadow ${
+                          isSelected
+                            ? 'border-[#0d0b0a] ring-2 ring-[#0d0b0a] ring-offset-2'
+                            : 'border-transparent hover:border-[#918b8b]'
+                        }`}
+                        style={{ backgroundColor: colorSwatchHex(color) }}
+                      />
+                    );
+                  })}
                 </div>
               )}
 
-              {showWallSwatches && (
-                <div className="flex gap-3">
-                  {wallSwatches.map((cls, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      aria-label={`Color option ${index + 1}`}
-                      className={`h-20 flex-1 rounded ${cls}`}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {showCountertopSwatches && (
-                <div className="flex flex-col gap-3">
-                  {[0, 1, 2].map((row) => (
-                    <div key={row} className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-                      {countertopSwatchImages
-                        .slice(row * 6, row * 6 + (row === 2 ? 4 : 6))
-                        .map((src, index) => (
-                          <div key={index} className="h-20 overflow-hidden rounded bg-gray-100">
-                            <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
-                          </div>
-                        ))}
-                    </div>
-                  ))}
-                </div>
+              {shadeNames.length > 0 && (
+                <p className="font-['Lato'] text-base font-normal leading-normal text-[#696664]">
+                  Shades: {shadeNames.join(', ')}
+                </p>
               )}
 
               <div className="mt-2 flex flex-col gap-4">

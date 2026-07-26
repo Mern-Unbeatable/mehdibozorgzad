@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { MoreVertical, Eye, Trash2 } from 'lucide-react';
+import { MoreVertical, Eye, Trash2, Pencil } from 'lucide-react';
 
 const MENU_WIDTH = 176;
-const MENU_HEIGHT = 96;
+const MENU_HEIGHT = 140;
 const MENU_GAP = 4;
 
-const ActionDropdown = ({ onSeeDetails, onDelete, seeDetailsLabel = 'See Details' }) => {
+const ActionDropdown = ({ onSeeDetails, onEdit, onDelete, seeDetailsLabel = 'See Details' }) => {
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState(null);
   const triggerRef = useRef(null);
@@ -91,6 +91,20 @@ const ActionDropdown = ({ onSeeDetails, onDelete, seeDetailsLabel = 'See Details
               <Eye size={16} aria-hidden="true" className="text-[#696664]" />
               {seeDetailsLabel}
             </button>
+            {onEdit ? (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  closeMenu();
+                  onEdit();
+                }}
+                className="flex w-full items-center gap-2.5 px-4 py-3 text-base font-['Lato'] text-[#0d0b0a] hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                <Pencil size={16} aria-hidden="true" className="text-[#696664]" />
+                Edit
+              </button>
+            ) : null}
             <button
               type="button"
               role="menuitem"

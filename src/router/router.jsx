@@ -206,6 +206,7 @@ const router = createBrowserRouter(
         <Route path={seg(ROUTES.ADMIN_MESSAGES)} element={<AdminMessages />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/add" element={<AddProduct />} />
+        <Route path="products/:id/edit" element={<AddProduct />} />
         <Route path="products/:id" element={<AdminProductDetail />} />
         <Route path={seg(ROUTES.ADMIN_LEADS_ENQUIRY)} element={<LeadsEnquiry />} />
         <Route path={seg(ROUTES.ADMIN_SETTINGS)} element={<AdminSettings />} />

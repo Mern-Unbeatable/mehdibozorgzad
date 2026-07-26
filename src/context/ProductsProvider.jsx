@@ -3,6 +3,7 @@ import {
   fetchProducts,
   fetchProductById,
   createProduct,
+  updateProduct,
   removeProduct,
   normalizeProductList,
 } from '../api/products';
@@ -38,6 +39,11 @@ export function ProductsProvider({ children }) {
 
   const addProduct = useCallback((formData, options) => createProduct(formData, options), []);
 
+  const editProduct = useCallback(
+    (id, formData, options) => updateProduct(id, formData, options),
+    [],
+  );
+
   const deleteProduct = useCallback(async (id) => {
     const result = await removeProduct(id);
     if (!result.error) await loadProducts();
@@ -52,9 +58,10 @@ export function ProductsProvider({ children }) {
       loadProducts,
       loadProduct,
       createProduct: addProduct,
+      updateProduct: editProduct,
       deleteProduct,
     }),
-    [loading, products, currentProduct, loadProducts, loadProduct, addProduct, deleteProduct],
+    [loading, products, currentProduct, loadProducts, loadProduct, addProduct, editProduct, deleteProduct],
   );
 
   return <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>;

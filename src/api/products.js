@@ -1,4 +1,4 @@
-import { apiDelete, apiGet, apiPost } from './client';
+import { apiDelete, apiGet, apiPost, apiPut } from './client';
 import { normalizePublicProduct } from '../utils/products';
 
 export async function fetchProducts(page = 1, limit = 50) {
@@ -54,8 +54,17 @@ export async function fetchProductById(id) {
   return { data: normalizePublicProduct(result.data), error: null };
 }
 
+/** Raw product from API — used for admin edit forms */
+export async function fetchProductRawById(id) {
+  return apiGet(`/api/products/${id}`);
+}
+
 export function createProduct(formData, options) {
   return apiPost('/api/products', formData, options);
+}
+
+export function updateProduct(id, formData, options) {
+  return apiPut(`/api/products/${id}`, formData, options);
 }
 
 export function removeProduct(id) {

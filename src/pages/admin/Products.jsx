@@ -8,95 +8,9 @@ import ActionDropdown from '../../components/layout/admin/ActionDropdown';
 import toast from 'react-hot-toast';
 import { displayLabel } from '../../utils/display';
 
-// TODO: replace with API
-const _mockData = {
-  products: [
-    {
-      id: 1,
-      name: 'Shaw Floors Aria',
-      category: 'Carpet',
-      brand: 'Shaw',
-      dateAdded: 'Jan 12, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 2,
-      name: 'Anderson Tuftex Hardwood',
-      category: 'Hardwood',
-      brand: 'Anderson Tuftex',
-      dateAdded: 'Jan 18, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 3,
-      name: 'COREtec Pro Plus XL',
-      category: 'Luxury Vinyl',
-      brand: 'COREtec',
-      dateAdded: 'Feb 3, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 4,
-      name: 'Mohawk SmartStrand',
-      category: 'Carpet',
-      brand: 'Mohawk',
-      dateAdded: 'Feb 14, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 5,
-      name: 'Pergo TimberCraft',
-      category: 'Laminate',
-      brand: 'Pergo',
-      dateAdded: 'Feb 20, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 6,
-      name: 'Stainmaster PetProtect',
-      category: 'Carpet',
-      brand: 'Stainmaster',
-      dateAdded: 'Mar 1, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 7,
-      name: 'LifeProof Vinyl Plank',
-      category: 'Luxury Vinyl',
-      brand: 'LifeProof',
-      dateAdded: 'Mar 9, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 8,
-      name: 'Bruce Hardwood Strip',
-      category: 'Hardwood',
-      brand: 'Bruce',
-      dateAdded: 'Mar 22, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 9,
-      name: 'Karndean Korlok',
-      category: 'Luxury Vinyl',
-      brand: 'Karndean',
-      dateAdded: 'Apr 5, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-    {
-      id: 10,
-      name: 'Daltile Ceramic Tile',
-      category: 'Tile',
-      brand: 'Daltile',
-      dateAdded: 'Apr 18, 2026',
-      image: 'https://placehold.co/48x48/E9E8E8/4C4946?text=P',
-    },
-  ],
-};
-
 const Products = () => {
   const navigate = useNavigate();
-  const { loading, products: contextProducts, loadProducts, deleteProduct } = useProducts();
+  const { loading, products, loadProducts, deleteProduct } = useProducts();
 
   useEffect(() => {
     loadProducts();
@@ -107,8 +21,6 @@ const Products = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const PAGE_SIZE = 8;
-  const products =
-    contextProducts.length > 0 ? contextProducts : _mockData.products;
   const total = products.length;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const paginated = Array.isArray(products)
@@ -240,6 +152,7 @@ const Products = () => {
                     <td className="px-6 py-4 text-center">
                       <ActionDropdown
                         onSeeDetails={() => navigate('/admin/products/' + row.id)}
+                        onEdit={() => navigate(`/admin/products/${row.id}/edit`)}
                         onDelete={() => setDeleteTarget(row)}
                       />
                     </td>

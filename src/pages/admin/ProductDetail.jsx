@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 import { useProducts } from '../../context/ProductsContext';
 import { ROUTES } from '../../config';
 import { displayLabel } from '../../utils/display';
@@ -70,14 +70,24 @@ const ProductDetail = () => {
 
   return (
     <section className="space-y-8">
-      <button
-        type="button"
-        onClick={() => navigate(ROUTES.ADMIN_PRODUCTS)}
-        className="inline-flex items-center gap-2 text-base font-['Lato'] text-[#696664] hover:text-[#0d0b0a] transition-colors cursor-pointer"
-      >
-        <ArrowLeft size={18} aria-hidden="true" />
-        Back to Products
-      </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <button
+          type="button"
+          onClick={() => navigate(ROUTES.ADMIN_PRODUCTS)}
+          className="inline-flex items-center gap-2 text-base font-['Lato'] text-[#696664] hover:text-[#0d0b0a] transition-colors cursor-pointer"
+        >
+          <ArrowLeft size={18} aria-hidden="true" />
+          Back to Products
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate(`/admin/products/${product.id}/edit`)}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0d0b0a] hover:bg-[#1f1b18] text-white rounded-full text-base font-medium font-['Lato'] transition-colors cursor-pointer"
+        >
+          <Pencil size={16} aria-hidden="true" />
+          Edit Product
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <div className="space-y-3">

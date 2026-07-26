@@ -15,8 +15,6 @@ import flooringData from './data/flooringData.json';
 const {
   TAB_FILTER_CONFIG,
   CATEGORY_TABS,
-  FLOOR_SWATCHES,
-  WALL_SWATCHES,
   TAB_DESCRIPTIONS,
   TAB_COLOR_LABELS,
 } = flooringData;
@@ -239,8 +237,6 @@ const FlooringContent = () => {
         getProductSpecs={getProductSpecs}
         tabDescriptions={TAB_DESCRIPTIONS}
         tabColorLabels={TAB_COLOR_LABELS}
-        floorSwatches={FLOOR_SWATCHES}
-        wallSwatches={WALL_SWATCHES}
       />
     );
   }

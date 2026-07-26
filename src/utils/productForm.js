@@ -24,7 +24,7 @@ const ID_FIELDS = [
 
 const ARRAY_ID_FIELDS = ['colorIds', 'shadeIds', 'fiberIds'];
 
-/** Build multipart body for POST /api/products */
+/** Build multipart body for POST /api/products and PUT /api/products/:id */
 export function buildProductFormData({ productType, fields = {}, images = [] }) {
   const formData = new FormData();
 
@@ -55,4 +55,51 @@ export function buildProductFormData({ productType, fields = {}, images = [] }) 
   });
 
   return formData;
+}
+
+function relationIds(items = [], idKey, nestedKey) {
+  return (items ?? [])
+    .map((item) => item?.[idKey] ?? item?.[nestedKey]?.id)
+    .filter(Boolean);
+}
+
+/** Map GET /api/products/:id response → admin edit form state */
+export function populateProductFormFromApi(product) {
+  if (!product) {
+    return { productType: 'FLOORS', fields: {}, existingImages: [] };
+  }
+
+  return {
+    productType: product.productType || 'FLOORS',
+    fields: {
+      name: product.name ?? '',
+      description: product.description ?? '',
+      productHighlights: product.productHighlights ?? '',
+      size: product.size ?? '',
+      sku: product.sku ?? '',
+      construction: product.construction ?? '',
+      material: product.material ?? '',
+      residential: product.residential ?? '',
+      warranty: product.warranty ?? '',
+      collection: product.collection ?? '',
+      shape: product.shape ?? '',
+      productLook: product.productLook ?? '',
+      thickness: product.thickness ?? '',
+      categoryId: product.categoryId ?? product.category?.id ?? '',
+      brandId: product.brandId ?? product.brand?.id ?? '',
+      formatId: product.formatId ?? product.format?.id ?? '',
+      speciesId: product.speciesId ?? product.species?.id ?? '',
+      installationMethodId: product.installationMethodId ?? product.installationMethod?.id ?? '',
+      colorIds: relationIds(product.colors, 'colorId', 'color'),
+      shadeIds: relationIds(product.shades, 'shadeId', 'shade'),
+      fiberIds: relationIds(product.fibers, 'fiberId', 'fiber'),
+    },
+    existingImages: (product.images ?? [])
+      .map((image) => {
+        if (typeof image === 'string') return { id: image, url: image };
+        if (!image?.url) return null;
+        return { id: image.id, url: image.url };
+      })
+      .filter(Boolean),
+  };
 }

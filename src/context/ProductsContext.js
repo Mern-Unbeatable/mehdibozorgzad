@@ -7,6 +7,7 @@ export const ProductsContext = createContext({
   loadProducts: async () => {},
   loadProduct: async () => {},
   createProduct: async () => {},
+  updateProduct: async () => {},
   deleteProduct: async () => {},
 });
 

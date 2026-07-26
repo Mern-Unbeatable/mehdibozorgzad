@@ -1,11 +1,13 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Upload, X, ArrowLeft } from 'lucide-react';
 import { useProducts } from '../../context/ProductsContext';
 import { useSettings } from '../../context/SettingsContext';
 import { ROUTES } from '../../config';
 import { mergeSettingsSources } from '../../utils/adminSettings';
-import { buildProductFormData } from '../../utils/productForm';
+import { buildProductFormData, populateProductFormFromApi } from '../../utils/productForm';
+import { fetchProductRawById } from '../../api/products';
+import { imageSrc } from '../../utils/imageSrc';
 import toast from 'react-hot-toast';
 import UploadProgressOverlay from '../../components/layout/admin/UploadProgressOverlay';
 import { useMultipartUpload } from '../../hooks/useMultipartUpload';
@@ -228,13 +230,17 @@ const FormField = ({ field, value, onChange, onMultiChange, options = [] }) => {
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const { createProduct } = useProducts();
+  const { id: editProductId } = useParams();
+  const isEditMode = Boolean(editProductId);
+  const { createProduct, updateProduct } = useProducts();
   const { settings, loadSettings, loading: settingsLoading } = useSettings();
   const [productType, setProductType] = useState('FLOORS');
   const [formData, setFormData] = useState({});
+  const [existingImages, setExistingImages] = useState([]);
   const [images, setImages] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [processingImages, setProcessingImages] = useState(false);
+  const [productLoading, setProductLoading] = useState(isEditMode);
   const fileInputRef = useRef(null);
   const { uploadProgress, isUploading, upload } = useMultipartUpload();
 
@@ -243,6 +249,46 @@ const AddProduct = () => {
       if (error) toast.error('Failed to load catalog options');
     });
   }, [loadSettings]);
+
+  useEffect(() => {
+    if (!editProductId) {
+      setProductLoading(false);
+      return;
+    }
+
+    let active = true;
+
+    const loadProduct = async () => {
+      setProductLoading(true);
+      const { data, error } = await fetchProductRawById(editProductId);
+
+      if (!active) return;
+
+      if (error || !data) {
+        toast.error(error || 'Product not found');
+        navigate(ROUTES.ADMIN_PRODUCTS);
+        return;
+      }
+
+      const populated = populateProductFormFromApi(data);
+      setProductType(populated.productType);
+      setFormData(populated.fields);
+      setExistingImages(
+        populated.existingImages.map((image) => ({
+          ...image,
+          url: imageSrc(image.url),
+        })),
+      );
+      setImages([]);
+      setProductLoading(false);
+    };
+
+    loadProduct();
+
+    return () => {
+      active = false;
+    };
+  }, [editProductId, navigate]);
 
   const catalog = mergeSettingsSources(EMPTY_SETTINGS, settings);
   const schema = FIELD_SCHEMA[productType];
@@ -263,6 +309,7 @@ const AddProduct = () => {
   }, []);
 
   const handleTypeChange = (value) => {
+    if (isEditMode) return;
     setProductType(value);
     setFormData({});
   };
@@ -305,7 +352,14 @@ const AddProduct = () => {
       return;
     }
 
-    if (images.length === 0) {
+    const newFiles = images.map(({ file }) => file);
+
+    if (!isEditMode && newFiles.length === 0) {
+      toast.error('At least one product image is required');
+      return;
+    }
+
+    if (isEditMode && newFiles.length === 0 && existingImages.length === 0) {
       toast.error('At least one product image is required');
       return;
     }
@@ -313,20 +367,32 @@ const AddProduct = () => {
     const payload = buildProductFormData({
       productType,
       fields: formData,
-      images: images.map(({ file }) => file),
+      images: newFiles,
     });
 
-    const estimatedTotal = images.reduce((sum, { file }) => sum + (file?.size ?? 0), 0);
+    const estimatedTotal = newFiles.reduce((sum, file) => sum + (file?.size ?? 0), 0);
 
-    const { error } = await upload(estimatedTotal, (options) => createProduct(payload, options));
+    const { error } = await upload(estimatedTotal, (options) =>
+      isEditMode
+        ? updateProduct(editProductId, payload, options)
+        : createProduct(payload, options),
+    );
 
     if (!error) {
-      toast.success('Product published successfully');
-      navigate(ROUTES.ADMIN_PRODUCTS);
+      toast.success(isEditMode ? 'Product updated successfully' : 'Product published successfully');
+      navigate(isEditMode ? `/admin/products/${editProductId}` : ROUTES.ADMIN_PRODUCTS);
     } else {
-      toast.error(error || 'Failed to publish product');
+      toast.error(error || (isEditMode ? 'Failed to update product' : 'Failed to publish product'));
     }
   };
+
+  if (productLoading) {
+    return (
+      <section className="space-y-8">
+        <p className="text-base font-['Lato'] text-[#696664]">Loading product…</p>
+      </section>
+    );
+  }
 
   return (
     <section className="space-y-8">
@@ -340,7 +406,7 @@ const AddProduct = () => {
           Back to Products
         </button>
         <h1 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-2xl sm:text-3xl leading-tight">
-          Add New Product
+          {isEditMode ? 'Edit Product' : 'Add New Product'}
         </h1>
       </div>
 
@@ -357,8 +423,10 @@ const AddProduct = () => {
                     key={value}
                     type="button"
                     onClick={() => handleTypeChange(value)}
+                    disabled={isEditMode}
                     className={
-                      "px-5 py-2 rounded-full text-base font-medium font-['Lato'] transition-colors cursor-pointer " +
+                      "px-5 py-2 rounded-full text-base font-medium font-['Lato'] transition-colors " +
+                      (isEditMode ? 'cursor-not-allowed opacity-60 ' : 'cursor-pointer ') +
                       (productType === value
                         ? 'bg-[#0d0b0a] text-white'
                         : 'border border-[#0d0b0a] text-[#0d0b0a] hover:bg-gray-50')
@@ -475,8 +543,30 @@ const AddProduct = () => {
                 onChange={(event) => handleFiles(event.target.files)}
               />
 
+              {existingImages.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm font-['Lato'] text-[#696664]">Current images</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {existingImages.map((image) => (
+                      <div key={image.id} className="relative">
+                        <img
+                          src={image.url}
+                          alt="Existing product"
+                          className="w-full aspect-square object-cover rounded-xl border border-gray-100"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {images.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="mt-4 space-y-2">
+                  {existingImages.length > 0 && (
+                    <p className="text-sm font-['Lato'] text-[#696664]">New uploads</p>
+                  )}
+                  <div className="grid grid-cols-2 gap-2">
                   {images.map(({ url }, idx) => (
                     <div key={url} className="relative group">
                       <img
@@ -494,6 +584,7 @@ const AddProduct = () => {
                       </button>
                     </div>
                   ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -503,7 +594,7 @@ const AddProduct = () => {
         <UploadProgressOverlay
           visible={isUploading}
           progress={uploadProgress}
-          label="Uploading product images..."
+          label={isEditMode ? 'Updating product…' : 'Uploading product images...'}
         />
 
         <div className="flex flex-col sm:flex-row items-center justify-end gap-3 mt-8">
@@ -519,7 +610,13 @@ const AddProduct = () => {
             disabled={isUploading || processingImages || settingsLoading}
             className="px-6 py-2.5 rounded-lg bg-[#0d0b0a] hover:bg-[#1f1b18] text-white text-base font-medium font-['Lato'] transition-colors cursor-pointer disabled:opacity-70"
           >
-            {isUploading ? 'Publishing…' : 'Publish Product'}
+            {isUploading
+              ? isEditMode
+                ? 'Saving…'
+                : 'Publishing…'
+              : isEditMode
+                ? 'Save Changes'
+                : 'Publish Product'}
           </button>
         </div>
       </form>
