@@ -16,8 +16,8 @@ const ProductCard = memo(({ product, onSelect, tab }) => {
   );
 
   const handleSelect = useCallback(() => {
-    if (onSelect) onSelect(product);
-  }, [onSelect, product]);
+    if (onSelect) onSelect(tab ? { ...product, tab } : product);
+  }, [onSelect, product, tab]);
 
   return (
     <article

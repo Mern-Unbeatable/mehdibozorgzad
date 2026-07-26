@@ -4,7 +4,8 @@ import { Upload, X, ArrowLeft } from 'lucide-react';
 import { useProducts } from '../../context/ProductsContext';
 import { useSettings } from '../../context/SettingsContext';
 import { ROUTES } from '../../config';
-import { mergeSettingsSources, readStoredAdminSettings } from '../../utils/adminSettings';
+import { mergeSettingsSources } from '../../utils/adminSettings';
+import { buildProductFormData } from '../../utils/productForm';
 import toast from 'react-hot-toast';
 import UploadProgressOverlay from '../../components/layout/admin/UploadProgressOverlay';
 import { useMultipartUpload } from '../../hooks/useMultipartUpload';
@@ -14,14 +15,7 @@ import {
   waitForPaint,
 } from '../../utils/imagePreview';
 
-// TODO: replace with API
-const _mockData = {
-  products: [
-    { id: 'mock-product-1', name: 'Floors' },
-    { id: 'mock-product-2', name: 'Rugs' },
-    { id: 'mock-product-3', name: 'Countertops' },
-    { id: 'mock-product-4', name: 'Walls' },
-  ],
+const EMPTY_SETTINGS = {
   categories: [],
   brands: [],
   formats: [],
@@ -32,26 +26,33 @@ const _mockData = {
   installationMethods: [],
 };
 
+const PRODUCT_TYPES = [
+  { label: 'Floors', value: 'FLOORS' },
+  { label: 'Rugs', value: 'RUGS' },
+  { label: 'Countertops', value: 'COUNTERTOPS' },
+  { label: 'Walls', value: 'WALLS' },
+];
+
 const FIELD_SCHEMA = {
-  Floors: {
+  FLOORS: {
     basic: [
       { name: 'name', label: 'Product Name', required: true },
-      { name: 'category', label: 'Category', required: true, optionsKey: 'categories' },
-      { name: 'brand', label: 'Brand Name', required: true, optionsKey: 'brands' },
-      { name: 'format', label: 'Format', required: true, optionsKey: 'formats' },
-      { name: 'color', label: 'Color', optionsKey: 'colors' },
-      { name: 'shade', label: 'Shade', optionsKey: 'shades' },
-      { name: 'fiber', label: 'Fiber', optionsKey: 'fibers' },
-      { name: 'species', label: 'Species', optionsKey: 'species' },
+      { name: 'categoryId', label: 'Category', required: true, optionsKey: 'categories' },
+      { name: 'brandId', label: 'Brand', required: true, optionsKey: 'brands' },
+      { name: 'formatId', label: 'Format', optionsKey: 'formats' },
+      { name: 'colorIds', label: 'Colors', optionsKey: 'colors', multiple: true },
+      { name: 'shadeIds', label: 'Shades', optionsKey: 'shades', multiple: true },
+      { name: 'fiberIds', label: 'Fibers', optionsKey: 'fibers', multiple: true },
+      { name: 'speciesId', label: 'Species', optionsKey: 'species' },
       {
-        name: 'installationMethod',
+        name: 'installationMethodId',
         label: 'Installation Method',
         optionsKey: 'installationMethods',
       },
       { name: 'description', label: 'Product Description', type: 'textarea' },
     ],
     spec: [
-      { name: 'highlights', label: 'Product Highlights', type: 'textarea' },
+      { name: 'productHighlights', label: 'Product Highlights', type: 'textarea' },
       { name: 'size', label: 'Size' },
       { name: 'sku', label: 'SKU' },
       { name: 'construction', label: 'Construction' },
@@ -60,47 +61,49 @@ const FIELD_SCHEMA = {
       { name: 'warranty', label: 'Warranty' },
     ],
   },
-  Rugs: {
+  RUGS: {
     basic: [
       { name: 'name', label: 'Product Name', required: true },
-      { name: 'category', label: 'Category', required: true, optionsKey: 'categories' },
-      { name: 'brand', label: 'Brand Name', required: true, optionsKey: 'brands' },
-      { name: 'color', label: 'Color', optionsKey: 'colors' },
-      { name: 'shade', label: 'Shade', optionsKey: 'shades' },
+      { name: 'categoryId', label: 'Category', required: true, optionsKey: 'categories' },
+      { name: 'brandId', label: 'Brand', required: true, optionsKey: 'brands' },
+      { name: 'colorIds', label: 'Colors', optionsKey: 'colors', multiple: true },
+      { name: 'shadeIds', label: 'Shades', optionsKey: 'shades', multiple: true },
+      { name: 'description', label: 'Product Description', type: 'textarea' },
     ],
     spec: [
-      { name: 'highlights', label: 'Product Highlights', type: 'textarea' },
+      { name: 'productHighlights', label: 'Product Highlights', type: 'textarea' },
       { name: 'sku', label: 'SKU' },
       { name: 'collection', label: 'Collection' },
       { name: 'shape', label: 'Shape' },
     ],
   },
-  Countertops: {
+  COUNTERTOPS: {
     basic: [
       { name: 'name', label: 'Product Name', required: true },
-      { name: 'category', label: 'Category', optionsKey: 'categories' },
-      { name: 'color', label: 'Color', optionsKey: 'colors' },
-      { name: 'shade', label: 'Shade', optionsKey: 'shades' },
+      { name: 'categoryId', label: 'Category', optionsKey: 'categories' },
+      { name: 'colorIds', label: 'Colors', optionsKey: 'colors', multiple: true },
+      { name: 'shadeIds', label: 'Shades', optionsKey: 'shades', multiple: true },
+      { name: 'description', label: 'Product Description', type: 'textarea' },
     ],
     spec: [
-      { name: 'highlights', label: 'Product Highlights', type: 'textarea' },
+      { name: 'productHighlights', label: 'Product Highlights', type: 'textarea' },
       { name: 'size', label: 'Size' },
       { name: 'sku', label: 'SKU' },
       { name: 'collection', label: 'Collection' },
       { name: 'shape', label: 'Shape' },
       { name: 'productLook', label: 'Product Look' },
-      { name: 'species', label: 'Species' },
+      { name: 'speciesId', label: 'Species', optionsKey: 'species' },
       { name: 'material', label: 'Material' },
       { name: 'thickness', label: 'Thickness' },
     ],
   },
-  Walls: {
+  WALLS: {
     basic: [
       { name: 'name', label: 'Product Name', required: true },
-      { name: 'category', label: 'Category', required: true, optionsKey: 'categories' },
-      { name: 'brand', label: 'Brand Name', required: true, optionsKey: 'brands' },
-      { name: 'color', label: 'Color', optionsKey: 'colors' },
-      { name: 'shade', label: 'Shade', optionsKey: 'shades' },
+      { name: 'categoryId', label: 'Category', required: true, optionsKey: 'categories' },
+      { name: 'brandId', label: 'Brand', required: true, optionsKey: 'brands' },
+      { name: 'colorIds', label: 'Colors', optionsKey: 'colors', multiple: true },
+      { name: 'shadeIds', label: 'Shades', optionsKey: 'shades', multiple: true },
       { name: 'description', label: 'Product Description', type: 'textarea' },
     ],
     spec: [
@@ -114,10 +117,11 @@ const FIELD_SCHEMA = {
   },
 };
 
-const FormField = ({ field, value, onChange, options = [] }) => {
+const FormField = ({ field, value, onChange, onMultiChange, options = [] }) => {
   const base =
     "w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-base font-['Lato'] text-[#0d0b0a] placeholder:text-[#696664] focus:outline-none focus:border-[#0d0b0a] transition-colors";
   const selectOptions = Array.isArray(options) ? options : [];
+  const selectedIds = Array.isArray(value) ? value : [];
 
   if (field.type === 'textarea') {
     return (
@@ -128,13 +132,52 @@ const FormField = ({ field, value, onChange, options = [] }) => {
         </label>
         <textarea
           name={field.name}
-          value={value}
+          value={value ?? ''}
           onChange={onChange}
           rows={3}
           className={base + ' resize-none'}
           placeholder={field.label}
           required={field.required}
         />
+      </div>
+    );
+  }
+
+  if (field.optionsKey && field.multiple) {
+    return (
+      <div className="sm:col-span-2">
+        <label className="block text-sm font-medium font-['Lato'] text-[#0d0b0a] mb-2">
+          {field.label}
+          {field.required && <span className="text-red-500 ml-0.5">*</span>}
+        </label>
+        {selectOptions.length === 0 ? (
+          <p className="text-sm font-['Lato'] text-[#696664]">No options available.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {selectOptions.map((option) => {
+              const checked = selectedIds.includes(option.id);
+              return (
+                <label
+                  key={option.id}
+                  className={
+                    'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-["Lato"] cursor-pointer transition-colors ' +
+                    (checked
+                      ? 'border-[#0d0b0a] bg-[#0d0b0a] text-white'
+                      : 'border-gray-200 bg-gray-50 text-[#0d0b0a] hover:border-[#0d0b0a]/40')
+                  }
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={checked}
+                    onChange={(e) => onMultiChange(field.name, option.id, e.target.checked)}
+                  />
+                  {option.name}
+                </label>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }
@@ -148,14 +191,14 @@ const FormField = ({ field, value, onChange, options = [] }) => {
         </label>
         <select
           name={field.name}
-          value={value}
+          value={value ?? ''}
           onChange={onChange}
           className={base}
           required={field.required}
         >
           <option value="">{'Select ' + field.label}</option>
           {selectOptions.map((option) => (
-            <option key={option.id} value={option.name}>
+            <option key={option.id} value={option.id}>
               {option.name}
             </option>
           ))}
@@ -173,7 +216,7 @@ const FormField = ({ field, value, onChange, options = [] }) => {
       <input
         type="text"
         name={field.name}
-        value={value}
+        value={value ?? ''}
         onChange={onChange}
         className={base}
         placeholder={field.label}
@@ -186,8 +229,8 @@ const FormField = ({ field, value, onChange, options = [] }) => {
 const AddProduct = () => {
   const navigate = useNavigate();
   const { createProduct } = useProducts();
-  const { settings, loadSettings } = useSettings();
-  const [productType, setProductType] = useState('Floors');
+  const { settings, loadSettings, loading: settingsLoading } = useSettings();
+  const [productType, setProductType] = useState('FLOORS');
   const [formData, setFormData] = useState({});
   const [images, setImages] = useState([]);
   const [dragging, setDragging] = useState(false);
@@ -196,21 +239,12 @@ const AddProduct = () => {
   const { uploadProgress, isUploading, upload } = useMultipartUpload();
 
   useEffect(() => {
-    loadSettings();
+    loadSettings().then(({ error }) => {
+      if (error) toast.error('Failed to load catalog options');
+    });
   }, [loadSettings]);
 
-  const resolvedSettings = mergeSettingsSources(_mockData, settings, readStoredAdminSettings());
-  const productTypes =
-    resolvedSettings.products.length > 0
-      ? resolvedSettings.products.map((item) => item.name)
-      : _mockData.products.map((item) => item.name);
-
-  useEffect(() => {
-    if (!productTypes.includes(productType) && productTypes.length > 0) {
-      setProductType(productTypes[0]);
-    }
-  }, [productType, productTypes]);
-
+  const catalog = mergeSettingsSources(EMPTY_SETTINGS, settings);
   const schema = FIELD_SCHEMA[productType];
 
   const handleChange = useCallback((e) => {
@@ -218,8 +252,18 @@ const AddProduct = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleTypeChange = (t) => {
-    setProductType(t);
+  const handleMultiChange = useCallback((name, id, checked) => {
+    setFormData((prev) => {
+      const current = Array.isArray(prev[name]) ? prev[name] : [];
+      if (checked) {
+        return { ...prev, [name]: current.includes(id) ? current : [...current, id] };
+      }
+      return { ...prev, [name]: current.filter((item) => item !== id) };
+    });
+  }, []);
+
+  const handleTypeChange = (value) => {
+    setProductType(value);
     setFormData({});
   };
 
@@ -255,12 +299,22 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = new FormData();
-    payload.append('productType', productType);
-    Object.entries(formData).forEach(([k, v]) => {
-      if (v) payload.append(k, v);
+
+    if (!formData.name?.trim()) {
+      toast.error('Product name is required');
+      return;
+    }
+
+    if (images.length === 0) {
+      toast.error('At least one product image is required');
+      return;
+    }
+
+    const payload = buildProductFormData({
+      productType,
+      fields: formData,
+      images: images.map(({ file }) => file),
     });
-    images.forEach(({ file }) => payload.append('images', file));
 
     const estimatedTotal = images.reduce((sum, { file }) => sum + (file?.size ?? 0), 0);
 
@@ -276,7 +330,6 @@ const AddProduct = () => {
 
   return (
     <section className="space-y-8">
-      {/* Header */}
       <div>
         <button
           type="button"
@@ -293,55 +346,58 @@ const AddProduct = () => {
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: form fields */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Product type selector */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <h2 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-lg mb-4">
                 Product Type
               </h2>
               <div className="flex flex-wrap gap-2">
-                {productTypes.map((t) => (
+                {PRODUCT_TYPES.map(({ label, value }) => (
                   <button
-                    key={t}
+                    key={value}
                     type="button"
-                    onClick={() => handleTypeChange(t)}
+                    onClick={() => handleTypeChange(value)}
                     className={
                       "px-5 py-2 rounded-full text-base font-medium font-['Lato'] transition-colors cursor-pointer " +
-                      (productType === t
+                      (productType === value
                         ? 'bg-[#0d0b0a] text-white'
                         : 'border border-[#0d0b0a] text-[#0d0b0a] hover:bg-gray-50')
                     }
                   >
-                    {t}
+                    {label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Basic Information */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <h2 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-lg mb-5">
                 Basic Information
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {schema.basic.map((field) => (
-                  <div
-                    key={field.name}
-                    className={field.type === 'textarea' ? 'sm:col-span-2' : ''}
-                  >
-                    <FormField
-                      field={field}
-                      value={formData[field.name] ?? ''}
-                      onChange={handleChange}
-                      options={resolvedSettings[field.optionsKey] ?? []}
-                    />
-                  </div>
-                ))}
-              </div>
+              {settingsLoading ? (
+                <p className="text-sm font-['Lato'] text-[#696664]">Loading options…</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {schema.basic.map((field) => (
+                    <div
+                      key={field.name}
+                      className={
+                        field.type === 'textarea' || field.multiple ? 'sm:col-span-2' : ''
+                      }
+                    >
+                      <FormField
+                        field={field}
+                        value={formData[field.name]}
+                        onChange={handleChange}
+                        onMultiChange={handleMultiChange}
+                        options={catalog[field.optionsKey] ?? []}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Product Specifications */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <h2 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-lg mb-5">
                 Product Specifications
@@ -350,13 +406,14 @@ const AddProduct = () => {
                 {schema.spec.map((field) => (
                   <div
                     key={field.name}
-                    className={field.type === 'textarea' ? 'sm:col-span-2' : ''}
+                    className={field.type === 'textarea' || field.multiple ? 'sm:col-span-2' : ''}
                   >
                     <FormField
                       field={field}
-                      value={formData[field.name] ?? ''}
+                      value={formData[field.name]}
                       onChange={handleChange}
-                      options={resolvedSettings[field.optionsKey] ?? []}
+                      onMultiChange={handleMultiChange}
+                      options={catalog[field.optionsKey] ?? []}
                     />
                   </div>
                 ))}
@@ -364,24 +421,22 @@ const AddProduct = () => {
             </div>
           </div>
 
-          {/* Right: images */}
           <div className="space-y-4">
             <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <h2 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-lg mb-4">
                 Product Images
               </h2>
 
-              {/* Drop zone */}
               <div
                 role="button"
                 tabIndex={0}
                 aria-label="Upload product images"
                 onClick={() => fileInputRef.current?.click()}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click();
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') fileInputRef.current?.click();
                 }}
-                onDragOver={(e) => {
-                  e.preventDefault();
+                onDragOver={(event) => {
+                  event.preventDefault();
                   setDragging(true);
                 }}
                 onDragLeave={() => setDragging(false)}
@@ -417,14 +472,13 @@ const AddProduct = () => {
                 multiple
                 accept="image/*"
                 className="sr-only"
-                onChange={(e) => handleFiles(e.target.files)}
+                onChange={(event) => handleFiles(event.target.files)}
               />
 
-              {/* Thumbnails */}
               {images.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   {images.map(({ url }, idx) => (
-                    <div key={idx} className="relative group">
+                    <div key={url} className="relative group">
                       <img
                         src={url}
                         alt={'Preview ' + (idx + 1)}
@@ -452,7 +506,6 @@ const AddProduct = () => {
           label="Uploading product images..."
         />
 
-        {/* Footer actions */}
         <div className="flex flex-col sm:flex-row items-center justify-end gap-3 mt-8">
           <button
             type="button"
@@ -463,7 +516,7 @@ const AddProduct = () => {
           </button>
           <button
             type="submit"
-            disabled={isUploading || processingImages}
+            disabled={isUploading || processingImages || settingsLoading}
             className="px-6 py-2.5 rounded-lg bg-[#0d0b0a] hover:bg-[#1f1b18] text-white text-base font-medium font-['Lato'] transition-colors cursor-pointer disabled:opacity-70"
           >
             {isUploading ? 'Publishing…' : 'Publish Product'}

@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
-  fetchAllSettings,
-  fetchAllSettingsFallback,
+  fetchSettingsCatalog,
   fetchSettingsByCategory,
   addSettingItem,
   removeSettingItem,
@@ -16,14 +15,7 @@ export function SettingsProvider({ children }) {
   const loadSettings = useCallback(async () => {
     setLoading(true);
     try {
-      let { data, error } = await fetchAllSettings();
-
-      if (error || !data) {
-        const fallback = await fetchAllSettingsFallback();
-        data = fallback.data;
-        error = fallback.error;
-      }
-
+      const { data, error } = await fetchSettingsCatalog();
       if (!error) setSettings(normalizeSettings(data ?? {}));
       return { data, error };
     } finally {

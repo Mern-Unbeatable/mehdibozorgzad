@@ -26,6 +26,7 @@ export function ProductsProvider({ children }) {
 
   const loadProduct = useCallback(async (id) => {
     setLoading(true);
+    setCurrentProduct(null);
     try {
       const { data, error } = await fetchProductById(id);
       if (!error) setCurrentProduct(data);

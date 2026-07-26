@@ -135,15 +135,10 @@ const FlooringContent = () => {
 
   const selectedProduct = selectedProductDetail;
 
-  useEffect(() => {
-    if (productId && routeTab && !detailLoading && !selectedProduct) {
-      navigate(`${ROUTES.FLOORING}?tab=${activeTab}`, { replace: true });
-    }
-  }, [activeTab, detailLoading, navigate, productId, routeTab, selectedProduct]);
-
   const handleSelectProduct = useCallback(
     (product) => {
-      navigate(`/flooring/${activeTab}/${product.id}`);
+      const tab = product.tab || activeTab;
+      navigate(`/flooring/${tab}/${product.id}`);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     [activeTab, navigate],
@@ -213,6 +208,21 @@ const FlooringContent = () => {
     return (
       <div className="container mx-auto px-4 py-16">
         <p className="text-center font-['Lato'] text-[#696664]">Loading product...</p>
+      </div>
+    );
+  }
+
+  if (productId && !selectedProduct) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center space-y-4">
+        <p className="font-['Lato'] text-[#696664]">Product not found.</p>
+        <button
+          type="button"
+          onClick={handleBack}
+          className="font-['Lato'] text-[#0d0b0a] underline hover:no-underline cursor-pointer"
+        >
+          Back to products
+        </button>
       </div>
     );
   }
