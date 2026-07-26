@@ -1,9 +1,9 @@
-﻿import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Pencil } from 'lucide-react';
-import { useProducts } from '../../context/ProductsContext';
-import { ROUTES } from '../../config';
-import { displayLabel } from '../../utils/display';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Pencil } from "lucide-react";
+import { useProducts } from "../../context/ProductsContext";
+import { ROUTES } from "../../config";
+import { displayLabel } from "../../utils/display";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -26,15 +26,20 @@ const ProductDetail = () => {
       ? [product.image]
       : [];
 
-  const specs = (product?.specRows ?? []).map(([label, value]) => ({ label, value }));
+  const specs = (product?.specRows ?? []).map(([label, value]) => ({
+    label,
+    value,
+  }));
 
   const colorText =
     product?.colors?.length > 0
-      ? product.colors.join(', ')
-      : product?.primaryColor || '';
+      ? product.colors.join(", ")
+      : product?.primaryColor || "";
 
-  const shadeText = product?.shades?.length > 0 ? product.shades.join(', ') : '';
-  const fiberText = product?.fibers?.length > 0 ? product.fibers.join(', ') : '';
+  const shadeText =
+    product?.shades?.length > 0 ? product.shades.join(", ") : "";
+  const fiberText =
+    product?.fibers?.length > 0 ? product.fibers.join(", ") : "";
 
   if (loading) {
     return (
@@ -47,7 +52,9 @@ const ProductDetail = () => {
           <ArrowLeft size={18} aria-hidden="true" />
           Back to Products
         </button>
-        <p className="text-base font-['Lato'] text-[#696664]">Loading product details…</p>
+        <p className="text-base font-['Lato'] text-[#696664]">
+          Loading product details…
+        </p>
       </section>
     );
   }
@@ -63,7 +70,9 @@ const ProductDetail = () => {
           <ArrowLeft size={18} aria-hidden="true" />
           Back to Products
         </button>
-        <p className="text-base font-['Lato'] text-[#696664]">Product not found.</p>
+        <p className="text-base font-['Lato'] text-[#696664]">
+          Product not found.
+        </p>
       </section>
     );
   }
@@ -95,13 +104,15 @@ const ProductDetail = () => {
             {images[activeImage] ? (
               <img
                 src={images[activeImage]}
-                alt={product.name || 'Product'}
+                alt={product.name || "Product"}
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <p className="text-base font-['Lato'] text-[#696664]">No image</p>
+                <p className="text-base font-['Lato'] text-[#696664]">
+                  No image
+                </p>
               </div>
             )}
           </div>
@@ -115,8 +126,8 @@ const ProductDetail = () => {
                   onClick={() => setActiveImage(index)}
                   className={`h-16 w-16 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer shrink-0 ${
                     activeImage === index
-                      ? 'border-[#0d0b0a]'
-                      : 'border-gray-200 hover:border-gray-400'
+                      ? "border-[#0d0b0a]"
+                      : "border-gray-200 hover:border-gray-400"
                   }`}
                 >
                   <img
@@ -133,10 +144,12 @@ const ProductDetail = () => {
 
         <div className="space-y-4">
           {product.brand && (
-            <p className="text-sm font-['Lato'] text-[#696664]">{displayLabel(product.brand)}</p>
+            <p className="text-sm font-['Lato'] text-[#696664]">
+              {displayLabel(product.brand)}
+            </p>
           )}
           <h1 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-3xl leading-tight">
-            {product.name || '—'}
+            {product.name || "—"}
           </h1>
           {product.productType && (
             <p className="text-sm font-['Lato'] text-[#696664] uppercase tracking-wide">
@@ -148,17 +161,20 @@ const ProductDetail = () => {
             <div className="border border-gray-200 rounded-xl p-4 space-y-2">
               {colorText && (
                 <p className="text-base font-['Lato'] text-[#4C4946]">
-                  <span className="font-medium text-[#0d0b0a]">Colors:</span> {colorText}
+                  <span className="font-medium text-[#0d0b0a]">Colors:</span>{" "}
+                  {colorText}
                 </p>
               )}
               {shadeText && (
                 <p className="text-base font-['Lato'] text-[#4C4946]">
-                  <span className="font-medium text-[#0d0b0a]">Shades:</span> {shadeText}
+                  <span className="font-medium text-[#0d0b0a]">Shades:</span>{" "}
+                  {shadeText}
                 </p>
               )}
               {fiberText && (
                 <p className="text-base font-['Lato'] text-[#4C4946]">
-                  <span className="font-medium text-[#0d0b0a]">Fibers:</span> {fiberText}
+                  <span className="font-medium text-[#0d0b0a]">Fibers:</span>{" "}
+                  {fiberText}
                 </p>
               )}
             </div>
@@ -171,7 +187,9 @@ const ProductDetail = () => {
           <h2 className="font-['Playfair_Display'] font-semibold text-[#0d0b0a] text-xl">
             Product Description
           </h2>
-          <p className="text-base font-['Lato'] text-[#4C4946] leading-relaxed">{product.description}</p>
+          <p className="text-base font-['Lato'] text-[#4C4946] leading-relaxed">
+            {product.description}
+          </p>
         </div>
       )}
 
@@ -195,12 +213,15 @@ const ProductDetail = () => {
             <table className="w-full">
               <tbody>
                 {specs.map((spec) => (
-                  <tr key={spec.label} className="border-b border-gray-100 last:border-0">
+                  <tr
+                    key={spec.label}
+                    className="border-b border-gray-100 last:border-0"
+                  >
                     <td className="px-6 py-3.5 text-base font-['Lato'] text-[#4C4946] w-1/2">
                       {spec.label}
                     </td>
                     <td className="px-6 py-3.5 text-base font-['Lato'] text-[#0d0b0a] font-medium text-right">
-                      {displayLabel(spec.value) || '—'}
+                      {displayLabel(spec.value) || "—"}
                     </td>
                   </tr>
                 ))}

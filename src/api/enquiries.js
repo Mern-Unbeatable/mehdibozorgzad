@@ -11,7 +11,7 @@ export async function fetchEnquiries(page = 1, limit = 10) {
 
   return {
     data: {
-      items: data?.items ?? data?.enquiries ?? (Array.isArray(data) ? data : []),
+      items: data?.data ?? data?.items ?? data?.enquiries ?? (Array.isArray(data) ? data : []),
       pagination: data?.pagination ?? {
         total: data?.total ?? 0,
         page,

@@ -1,7 +1,7 @@
-import React, { memo, useCallback } from 'react';
-import { Heart } from 'lucide-react';
-import { useWishlist } from '../../context/WishlistContext';
-import { displayLabel } from '../../utils/display';
+import React, { memo, useCallback } from "react";
+import { Heart } from "lucide-react";
+import { useWishlist } from "../../context/WishlistContext";
+import { displayLabel } from "../../utils/display";
 
 const ProductCard = memo(({ product, onSelect, tab }) => {
   const { isWishlisted, toggleWishlist } = useWishlist();
@@ -34,7 +34,9 @@ const ProductCard = memo(({ product, onSelect, tab }) => {
         />
         <button
           type="button"
-          aria-label={wishlisted ? 'Remove from loved products' : 'Add to loved products'}
+          aria-label={
+            wishlisted ? "Remove from loved products" : "Add to loved products"
+          }
           onClick={handleToggleWishlist}
           className="absolute top-3 right-3 bg-white/90 backdrop-blur-md hover:bg-white transition-all duration-200 rounded-full h-11 w-11 flex items-center justify-center shadow-sm hover:scale-110 active:scale-95"
         >
@@ -42,7 +44,9 @@ const ProductCard = memo(({ product, onSelect, tab }) => {
             size={20}
             aria-hidden="true"
             className={`transition-colors duration-300 ${
-              wishlisted ? 'fill-red-500 text-red-500' : 'text-[#696664] hover:text-red-500'
+              wishlisted
+                ? "fill-red-500 text-red-500"
+                : "text-[#696664] hover:text-red-500"
             }`}
           />
         </button>
@@ -79,6 +83,6 @@ const ProductCard = memo(({ product, onSelect, tab }) => {
   );
 });
 
-ProductCard.displayName = 'ProductCard';
+ProductCard.displayName = "ProductCard";
 
 export default ProductCard;
