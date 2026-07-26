@@ -1,15 +1,15 @@
-import { resolveMediaUrl, resolveMediaUrls } from './media';
+import { imageSrc } from './imageSrc';
 
 /** Map backend project fields to what the UI expects. */
 export function getProjectCoverImage(project) {
   if (!project) return '';
 
-  if (project.img) return resolveMediaUrl(project.img);
+  if (project.img) return imageSrc(project.img);
 
   const featured = project.featuredImages?.[0];
   const featuredUrl = typeof featured === 'string' ? featured : featured?.url;
 
-  return resolveMediaUrl(
+  return imageSrc(
     project.featuredImageUrl ||
       featuredUrl ||
       project.thumbnailImage ||
@@ -25,9 +25,9 @@ export function getProjectCoverImage(project) {
 export function getFeaturedImageUrls(project) {
   if (!Array.isArray(project?.featuredImages)) return [];
 
-  return resolveMediaUrls(
-    project.featuredImages.map((image) => (typeof image === 'string' ? image : image?.url)),
-  );
+  return project.featuredImages
+    .map((image) => imageSrc(typeof image === 'string' ? image : image?.url))
+    .filter(Boolean);
 }
 
 export function normalizeProject(project) {
@@ -40,6 +40,10 @@ export function normalizeProject(project) {
   const featuredImages = getFeaturedImageUrls(project);
   const coverImage = getProjectCoverImage(project);
 
+  const thumbnail = imageSrc(project.thumbnailImage ?? project.thumbnailImageUrl ?? '');
+  const before = imageSrc(project.beforeImage ?? project.beforeImageUrl ?? project.beforeImg ?? '');
+  const after = imageSrc(project.afterImage ?? project.afterImageUrl ?? project.afterImg ?? '');
+
   return {
     ...project,
     img: coverImage,
@@ -47,20 +51,15 @@ export function normalizeProject(project) {
     description: project.shortDescription ?? project.description ?? '',
     location: project.location ?? location,
     materials: project.materialsUsed ?? project.materials ?? [],
-    afterImg: resolveMediaUrl(project.afterImage ?? project.afterImageUrl ?? project.afterImg ?? ''),
-    beforeImg: resolveMediaUrl(
-      project.beforeImage ?? project.beforeImageUrl ?? project.beforeImg ?? '',
-    ),
-    thumbnailImage: resolveMediaUrl(project.thumbnailImage ?? project.thumbnailImageUrl ?? ''),
-    thumbnailImageUrl: resolveMediaUrl(project.thumbnailImage ?? project.thumbnailImageUrl ?? ''),
-    beforeImage: resolveMediaUrl(project.beforeImage ?? project.beforeImageUrl ?? ''),
-    beforeImageUrl: resolveMediaUrl(project.beforeImage ?? project.beforeImageUrl ?? ''),
-    afterImage: resolveMediaUrl(project.afterImage ?? project.afterImageUrl ?? ''),
-    afterImageUrl: resolveMediaUrl(project.afterImage ?? project.afterImageUrl ?? ''),
-    featuredImageItems: featuredImageItems.map((image) => ({
-      ...image,
-      url: resolveMediaUrl(image.url),
-    })),
+    afterImg: after,
+    beforeImg: before,
+    thumbnailImage: thumbnail,
+    thumbnailImageUrl: thumbnail,
+    beforeImage: before,
+    beforeImageUrl: before,
+    afterImage: after,
+    afterImageUrl: after,
+    featuredImageItems,
     featuredImages,
   };
 }
@@ -92,8 +91,8 @@ function featuredImageItemsFromProject(project) {
 
   return items
     .map((image) => {
-      if (typeof image === 'string') return { id: image, url: image };
-      if (image?.id && image?.url) return image;
+      if (typeof image === 'string') return { id: image, url: imageSrc(image) };
+      if (image?.id && image?.url) return { ...image, url: imageSrc(image.url) };
       return null;
     })
     .filter(Boolean);

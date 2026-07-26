@@ -1,5 +1,5 @@
 import { displayLabel } from './display';
-import { resolveMediaUrl, resolveMediaUrls } from './media';
+import { imageSrc } from './imageSrc';
 
 const PRODUCT_TYPE_TABS = {
   FLOORS: 'floors',
@@ -64,9 +64,9 @@ function buildSpecRows(product, colors, shades, fibers) {
 export function normalizePublicProduct(product) {
   if (!product) return product;
 
-  const imageUrls = resolveMediaUrls(
-    (product.images ?? []).map((image) => (typeof image === 'string' ? image : image?.url)),
-  );
+  const imageUrls = (product.images ?? [])
+    .map((image) => imageSrc(typeof image === 'string' ? image : image?.url))
+    .filter(Boolean);
 
   const colors = relationNames(product.colors, 'color');
   const shades = relationNames(product.shades, 'shade');
