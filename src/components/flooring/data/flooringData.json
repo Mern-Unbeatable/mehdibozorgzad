@@ -1,0 +1,621 @@
+{
+  "MOCK_PRODUCTS": {
+    "floors": [
+      {
+        "id": "f1",
+        "brand": "Abbey Carpet",
+        "name": "Biltmore Texture",
+        "colorCount": 9,
+        "image": "/carpet1.webp"
+      },
+      {
+        "id": "f2",
+        "brand": "Abbey Carpet",
+        "name": "Coastal Breeze",
+        "colorCount": 7,
+        "image": "/carpet2.webp"
+      },
+      {
+        "id": "f3",
+        "brand": "Abbey Carpet",
+        "name": "Heritage Oak",
+        "colorCount": 6,
+        "image": "/flooringImg.jpg"
+      },
+      {
+        "id": "f4",
+        "brand": "Abbey Carpet",
+        "name": "Milano Plush",
+        "colorCount": 9,
+        "image": "/carpet1.webp"
+      },
+      {
+        "id": "f5",
+        "brand": "Alexander Smith",
+        "name": "Brookstone Loop",
+        "colorCount": 5,
+        "image": "/carpet2.webp"
+      },
+      {
+        "id": "f6",
+        "brand": "Alexander Smith",
+        "name": "Canyon Ridge",
+        "colorCount": 8,
+        "image": "/carpetHero.webp"
+      },
+      {
+        "id": "f7",
+        "brand": "Couture",
+        "name": "Velvet Touch",
+        "colorCount": 9,
+        "image": "/carpet1.webp"
+      },
+      {
+        "id": "f8",
+        "brand": "Couture",
+        "name": "Silhouette Plush",
+        "colorCount": 7,
+        "image": "/carpet2.webp"
+      },
+      {
+        "id": "f9",
+        "brand": "Couture petdefense™",
+        "name": "Paw Proof Plus",
+        "colorCount": 6,
+        "image": "/carpetHero.webp"
+      },
+      {
+        "id": "f10",
+        "brand": "American Showcase",
+        "name": "Downtown Plank",
+        "colorCount": 5,
+        "image": "/flooringImg.jpg"
+      },
+      {
+        "id": "f11",
+        "brand": "American Showcase",
+        "name": "Uptown Hardwood",
+        "colorCount": 4,
+        "image": "/constgallery3.jpg"
+      },
+      {
+        "id": "f12",
+        "brand": "Abbey Carpet",
+        "name": "Shoreline Berber",
+        "colorCount": 9,
+        "image": "/carpet1.webp"
+      }
+    ],
+    "rugs": [
+      {
+        "id": "r1",
+        "brand": "Nourison Home",
+        "name": "Persian Garden",
+        "colorCount": 6,
+        "image": "/carpet1.webp"
+      },
+      {
+        "id": "r2",
+        "brand": "Nourison Home",
+        "name": "Ivory Medallion",
+        "colorCount": 4,
+        "image": "/carpet2.webp"
+      },
+      {
+        "id": "r3",
+        "brand": "Calvin Klein",
+        "name": "Modern Lines",
+        "colorCount": 5,
+        "image": "/carpetHero.webp"
+      },
+      {
+        "id": "r4",
+        "brand": "Calvin Klein",
+        "name": "Neutral Weave",
+        "colorCount": 3,
+        "image": "/carpet1.webp"
+      },
+      {
+        "id": "r5",
+        "brand": "Christopher Guy",
+        "name": "Luxe Contour",
+        "colorCount": 4,
+        "image": "/carpet2.webp"
+      },
+      {
+        "id": "r6",
+        "brand": "Michael Amini",
+        "name": "Elegance Round",
+        "colorCount": 6,
+        "image": "/carpetHero.webp"
+      },
+      {
+        "id": "r7",
+        "brand": "Nourison Home",
+        "name": "Capri Coastal",
+        "colorCount": 5,
+        "image": "/carpet1.webp"
+      },
+      {
+        "id": "r8",
+        "brand": "Michael Amini",
+        "name": "Grand Estate",
+        "colorCount": 3,
+        "image": "/carpet2.webp"
+      },
+      {
+        "id": "r9",
+        "brand": "Nourison Home",
+        "name": "Studio Haven",
+        "colorCount": 6,
+        "image": "/carpetHero.webp"
+      }
+    ],
+    "countertops": [
+      {
+        "id": "c1",
+        "brand": "Daltile",
+        "name": "Calacatta Marble",
+        "colorCount": 3,
+        "image": "/constgallery9.jpg"
+      },
+      {
+        "id": "c2",
+        "brand": "Daltile",
+        "name": "Bianco Quartz",
+        "colorCount": 4,
+        "image": "/constgallery11.jpg"
+      },
+      {
+        "id": "c3",
+        "brand": "Daltile",
+        "name": "Nero Marquina",
+        "colorCount": 2,
+        "image": "/constgallery12.jpg"
+      },
+      {
+        "id": "c4",
+        "brand": "Daltile",
+        "name": "Statuario Slab",
+        "colorCount": 3,
+        "image": "/constgallery9.jpg"
+      },
+      {
+        "id": "c5",
+        "brand": "Daltile",
+        "name": "Arctic White Stone",
+        "colorCount": 5,
+        "image": "/constgallery11.jpg"
+      },
+      {
+        "id": "c6",
+        "brand": "Daltile",
+        "name": "Sandstone Beige",
+        "colorCount": 4,
+        "image": "/constgallery12.jpg"
+      },
+      {
+        "id": "c7",
+        "brand": "Daltile",
+        "name": "Greige Travertine",
+        "colorCount": 3,
+        "image": "/constgallery9.jpg"
+      },
+      {
+        "id": "c8",
+        "brand": "Daltile",
+        "name": "Volcanic Black",
+        "colorCount": 2,
+        "image": "/constgallery11.jpg"
+      },
+      {
+        "id": "c9",
+        "brand": "Daltile",
+        "name": "Silver Cloud Quartz",
+        "colorCount": 4,
+        "image": "/constgallery12.jpg"
+      },
+      {
+        "id": "c10",
+        "brand": "Daltile",
+        "name": "Crema Marfil",
+        "colorCount": 3,
+        "image": "/constgallery9.jpg"
+      },
+      {
+        "id": "c11",
+        "brand": "Daltile",
+        "name": "Onyx Pearl",
+        "colorCount": 2,
+        "image": "/constgallery11.jpg"
+      },
+      {
+        "id": "c12",
+        "brand": "Daltile",
+        "name": "Ivory Limestone",
+        "colorCount": 5,
+        "image": "/constgallery12.jpg"
+      }
+    ],
+    "walls": [
+      {
+        "id": "w1",
+        "brand": "Marazzi USA",
+        "name": "Subway Classic White",
+        "colorCount": 4,
+        "image": "/constgallery1.jpg"
+      },
+      {
+        "id": "w2",
+        "brand": "Marazzi USA",
+        "name": "Stone Mosaic Blend",
+        "colorCount": 5,
+        "image": "/constgallery2.jpg"
+      },
+      {
+        "id": "w3",
+        "brand": "Marazzi USA",
+        "name": "Dove Gray Porcelain",
+        "colorCount": 3,
+        "image": "/constgallery3.jpg"
+      },
+      {
+        "id": "w4",
+        "brand": "Daltile",
+        "name": "Arctic Ceramic Field",
+        "colorCount": 4,
+        "image": "/constgallery4.jpg"
+      },
+      {
+        "id": "w5",
+        "brand": "Daltile",
+        "name": "Marble Look Panel",
+        "colorCount": 3,
+        "image": "/constgallery5.jpg"
+      },
+      {
+        "id": "w6",
+        "brand": "American Showcase",
+        "name": "Heritage Brick",
+        "colorCount": 5,
+        "image": "/constgallery6.jpg"
+      },
+      {
+        "id": "w7",
+        "brand": "Marazzi USA",
+        "name": "Terracotta Rustic",
+        "colorCount": 4,
+        "image": "/constgallery7.jpg"
+      },
+      {
+        "id": "w8",
+        "brand": "Marazzi USA",
+        "name": "Linen Textured Tile",
+        "colorCount": 3,
+        "image": "/constgallery8.jpg"
+      },
+      {
+        "id": "w9",
+        "brand": "American Showcase",
+        "name": "Cobblestone Effect",
+        "colorCount": 2,
+        "image": "/constgallery9.jpg"
+      },
+      {
+        "id": "w10",
+        "brand": "Daltile",
+        "name": "Ocean Glass Mosaic",
+        "colorCount": 6,
+        "image": "/constgallery10.jpg"
+      },
+      {
+        "id": "w11",
+        "brand": "Marazzi USA",
+        "name": "Concrete Industrial",
+        "colorCount": 4,
+        "image": "/constgallery11.jpg"
+      },
+      {
+        "id": "w12",
+        "brand": "Marazzi USA",
+        "name": "Nordic Slate Porcelain",
+        "colorCount": 3,
+        "image": "/constgallery12.jpg"
+      }
+    ]
+  },
+  "PRODUCT_ATTRIBUTES": {
+    "f1": { "productFamily": "carpet", "format": "broadloom", "color": "brown", "shade": "medium", "fiber": "polyester", "installMethod": "direct-glue" },
+    "f2": { "productFamily": "carpet", "format": "broadloom", "color": "gray", "shade": "light", "fiber": "nylon", "installMethod": "direct-glue" },
+    "f3": { "productFamily": "hardwood", "format": "engineered", "color": "brown", "shade": "dark", "species": "oak", "installMethod": "float" },
+    "f4": { "productFamily": "carpet", "format": "broadloom", "color": "beige", "shade": "light", "fiber": "polyester", "installMethod": "direct-glue" },
+    "f5": { "productFamily": "carpet", "format": "broadloom", "color": "brown", "shade": "medium", "fiber": "blend", "installMethod": "direct-glue" },
+    "f6": { "productFamily": "carpet", "format": "broadloom", "color": "gray", "shade": "medium", "fiber": "nylon", "installMethod": "direct-glue" },
+    "f7": { "productFamily": "carpet", "format": "broadloom", "color": "beige", "shade": "medium", "fiber": "polyester", "installMethod": "direct-glue" },
+    "f8": { "productFamily": "carpet", "format": "broadloom", "color": "beige", "shade": "light", "fiber": "nylon", "installMethod": "direct-glue" },
+    "f9": { "productFamily": "carpet", "format": "carpet-tile-fmt", "color": "brown", "shade": "medium", "fiber": "infinity-nylon", "installMethod": "click" },
+    "f10": { "productFamily": "laminate", "format": "laminate-plank", "color": "gray", "shade": "dark", "species": "hickory", "installMethod": "click" },
+    "f11": { "productFamily": "hardwood", "format": "engineered", "color": "brown", "shade": "medium", "species": "european-white-oak", "installMethod": "5g-lock-fold" },
+    "f12": { "productFamily": "carpet", "format": "broadloom", "color": "gray", "shade": "light", "fiber": "infinity-polyester", "installMethod": "direct-glue" },
+    "r1": { "productFamily": "area-rugs", "color": "brown", "shade": "medium" },
+    "r2": { "productFamily": "area-rugs", "color": "beige", "shade": "light" },
+    "r3": { "productFamily": "area-rugs", "color": "blue", "shade": "medium" },
+    "r4": { "productFamily": "area-rugs", "color": "gray", "shade": "medium" },
+    "r5": { "productFamily": "area-rugs", "color": "black", "shade": "dark" },
+    "r6": { "productFamily": "area-rugs", "color": "beige", "shade": "medium" },
+    "r7": { "productFamily": "area-rugs", "color": "blue", "shade": "light" },
+    "r8": { "productFamily": "area-rugs", "color": "brown", "shade": "dark" },
+    "r9": { "productFamily": "area-rugs", "color": "gray", "shade": "medium" },
+    "c1": { "productFamily": "tile-stone", "color": "beige", "shade": "light" },
+    "c2": { "productFamily": "tile-stone", "color": "gray", "shade": "light" },
+    "c3": { "productFamily": "tile-stone", "color": "black", "shade": "dark" },
+    "c4": { "productFamily": "tile-stone", "color": "gray", "shade": "medium" },
+    "c5": { "productFamily": "tile-stone", "color": "beige", "shade": "light" },
+    "c6": { "productFamily": "tile-stone", "color": "beige", "shade": "medium" },
+    "c7": { "productFamily": "tile-stone", "color": "gray", "shade": "medium" },
+    "c8": { "productFamily": "tile-stone", "color": "black", "shade": "dark" },
+    "c9": { "productFamily": "tile-stone", "color": "blue", "shade": "light" },
+    "c10": { "productFamily": "tile-stone", "color": "beige", "shade": "medium" },
+    "c11": { "productFamily": "tile-stone", "color": "gray", "shade": "light" },
+    "c12": { "productFamily": "tile-stone", "color": "beige", "shade": "light" },
+    "w1": { "productFamily": "tile-stone", "format": "ceramic", "color": "gray", "shade": "light" },
+    "w2": { "productFamily": "tile-stone", "format": "ceramic", "color": "brown", "shade": "medium" },
+    "w3": { "productFamily": "tile-stone", "format": "porcelain", "color": "gray", "shade": "medium" },
+    "w4": { "productFamily": "tile-stone", "format": "ceramic", "color": "beige", "shade": "light" },
+    "w5": { "productFamily": "tile-stone", "format": "porcelain", "color": "gray", "shade": "light" },
+    "w6": { "productFamily": "tile-stone", "format": "ceramic", "color": "brown", "shade": "medium" },
+    "w7": { "productFamily": "tile-stone", "format": "ceramic", "color": "brown", "shade": "dark" },
+    "w8": { "productFamily": "tile-stone", "format": "ceramic", "color": "beige", "shade": "light" },
+    "w9": { "productFamily": "tile-stone", "format": "ceramic", "color": "gray", "shade": "medium" },
+    "w10": { "productFamily": "tile-stone", "format": "ceramic", "color": "blue", "shade": "medium" },
+    "w11": { "productFamily": "tile-stone", "format": "porcelain", "color": "gray", "shade": "dark" },
+    "w12": { "productFamily": "tile-stone", "format": "porcelain", "color": "gray", "shade": "medium" }
+  },
+  "TAB_FILTER_CONFIG": {
+    "floors": [
+      {
+        "id": "productFamily",
+        "label": "Product Family",
+        "options": [
+          { "id": "carpet", "label": "CARPET" },
+          { "id": "hardwood", "label": "HARDWOOD" },
+          { "id": "tile-stone", "label": "TILE & STONE" },
+          { "id": "luxury-vinyl", "label": "LUXURY VINYL" },
+          { "id": "laminate", "label": "LAMINATE" },
+          { "id": "carpet-tile", "label": "CARPET TILE" }
+        ]
+      },
+      {
+        "id": "format",
+        "label": "Format",
+        "options": [
+          { "id": "broadloom", "label": "Broadloom" },
+          { "id": "carpet-tile-fmt", "label": "Carpet Tile" },
+          { "id": "ceramic", "label": "Ceramic" },
+          { "id": "engineered", "label": "Engineered" },
+          { "id": "laminate-plank", "label": "Laminate" }
+        ]
+      },
+      {
+        "id": "brand",
+        "label": "Brand",
+        "options": [
+          { "id": "abbey-carpet", "label": "Abbey Carpet" },
+          { "id": "alexander-smith", "label": "Alexander Smith" },
+          { "id": "american-showcase", "label": "American Showcase" },
+          { "id": "couture", "label": "Couture" },
+          { "id": "couture-petdefense", "label": "Couture petdefense™" }
+        ]
+      },
+      {
+        "id": "color",
+        "label": "Color",
+        "options": [
+          { "id": "beige", "label": "Beige" },
+          { "id": "black", "label": "Black" },
+          { "id": "blue", "label": "Blue" },
+          { "id": "brown", "label": "Brown" },
+          { "id": "gray", "label": "Gray" }
+        ]
+      },
+      {
+        "id": "shade",
+        "label": "Shade",
+        "options": [
+          { "id": "light", "label": "Light" },
+          { "id": "medium", "label": "Medium" },
+          { "id": "dark", "label": "Dark" }
+        ]
+      },
+      {
+        "id": "fiber",
+        "label": "Fiber",
+        "options": [
+          { "id": "blend", "label": "Blend" },
+          { "id": "infinity-nylon", "label": "Infinity Nylon" },
+          { "id": "infinity-polyester", "label": "Infinity Polyester" },
+          { "id": "nylon", "label": "Nylon" },
+          { "id": "polyester", "label": "Polyester" }
+        ]
+      },
+      {
+        "id": "species",
+        "label": "Species",
+        "options": [
+          { "id": "brazilian-oak", "label": "Brazilian Oak" },
+          { "id": "european-white-oak", "label": "European White Oak" },
+          { "id": "hickory", "label": "Hickory" },
+          { "id": "maple", "label": "Maple" },
+          { "id": "oak", "label": "Oak" }
+        ]
+      },
+      {
+        "id": "installMethod",
+        "label": "Installation Method",
+        "options": [
+          { "id": "5g-lock-fold", "label": "5G Lock & Fold" },
+          { "id": "click", "label": "Click" },
+          { "id": "direct-glue", "label": "Direct Glue" },
+          { "id": "float", "label": "Float" },
+          { "id": "fold-in-tap", "label": "Fold In Tap" }
+        ]
+      }
+    ],
+    "rugs": [
+      {
+        "id": "productFamily",
+        "label": "Product Family",
+        "options": [{ "id": "area-rugs", "label": "Area Rugs" }]
+      },
+      {
+        "id": "brand",
+        "label": "Brand",
+        "options": [
+          { "id": "calvin-klein", "label": "Calvin Klein" },
+          { "id": "christopher-guy", "label": "Christopher Guy" },
+          { "id": "eley", "label": "Eley" },
+          { "id": "michael-amini", "label": "Michael Amini" },
+          { "id": "nourison-home", "label": "Nourison Home" }
+        ]
+      },
+      {
+        "id": "color",
+        "label": "Color",
+        "options": [
+          { "id": "beige", "label": "Beige" },
+          { "id": "black", "label": "Black" },
+          { "id": "blue", "label": "Blue" },
+          { "id": "brown", "label": "Brown" },
+          { "id": "gray", "label": "Gray" },
+          { "id": "green", "label": "Green" }
+        ]
+      },
+      {
+        "id": "shade",
+        "label": "Shade",
+        "options": [
+          { "id": "light", "label": "Light" },
+          { "id": "medium", "label": "Medium" },
+          { "id": "dark", "label": "Dark" }
+        ]
+      }
+    ],
+    "countertops": [
+      {
+        "id": "productFamily",
+        "label": "Product Family",
+        "options": [{ "id": "tile-stone", "label": "Tile & Stone" }]
+      },
+      {
+        "id": "color",
+        "label": "Color",
+        "options": [
+          { "id": "beige", "label": "Beige" },
+          { "id": "black", "label": "Black" },
+          { "id": "blue", "label": "Blue" },
+          { "id": "brown", "label": "Brown" },
+          { "id": "gray", "label": "Gray" },
+          { "id": "green", "label": "Green" }
+        ]
+      },
+      {
+        "id": "shade",
+        "label": "Shade",
+        "options": [
+          { "id": "light", "label": "Light" },
+          { "id": "medium", "label": "Medium" },
+          { "id": "dark", "label": "Dark" }
+        ]
+      }
+    ],
+    "walls": [
+      {
+        "id": "productFamily",
+        "label": "Product Family",
+        "options": [{ "id": "tile-stone", "label": "Tile & Stone" }]
+      },
+      {
+        "id": "format",
+        "label": "Format",
+        "options": [
+          { "id": "ceramic", "label": "Ceramic" },
+          { "id": "porcelain", "label": "Porcelain" }
+        ]
+      },
+      {
+        "id": "brand",
+        "label": "Brand",
+        "options": [
+          { "id": "american-olean", "label": "American Olean" },
+          { "id": "american-olcan", "label": "American Olcan" },
+          { "id": "american-showcase", "label": "American Showcase" },
+          { "id": "daltile", "label": "Daltile" },
+          { "id": "marazzi-usa", "label": "Marazzi USA" }
+        ]
+      },
+      {
+        "id": "color",
+        "label": "Color",
+        "options": [
+          { "id": "beige", "label": "Beige" },
+          { "id": "black", "label": "Black" },
+          { "id": "blue", "label": "Blue" },
+          { "id": "brown", "label": "Brown" },
+          { "id": "gray", "label": "Gray" }
+        ]
+      },
+      {
+        "id": "shade",
+        "label": "Shade",
+        "options": [
+          { "id": "light", "label": "Light" },
+          { "id": "medium", "label": "Medium" },
+          { "id": "dark", "label": "Dark" }
+        ]
+      }
+    ]
+  },
+  "CATEGORY_TABS": [
+    { "id": "floors", "label": "Floors" },
+    { "id": "rugs", "label": "Rugs" },
+    { "id": "countertops", "label": "Countertops" },
+    { "id": "walls", "label": "Walls" }
+  ],
+  "FLOOR_SWATCHES": [
+    "bg-[#796f65]",
+    "bg-[#92826d]",
+    "bg-[#9b9187]",
+    "bg-[#8e847b]",
+    "bg-[#7e6c56]",
+    "bg-[#8b8177]",
+    "bg-[#857c75]",
+    "bg-[#715d47]",
+    "bg-[#6f6354]",
+    "bg-[#988a79]",
+    "bg-[#85786f]",
+    "bg-[#8b7e6e]",
+    "bg-[#937353]",
+    "bg-[#4e3d2c]",
+    "bg-[#552f09]",
+    "bg-[#814305]"
+  ],
+  "WALL_SWATCHES": [
+    "bg-[#e8e3dc]",
+    "bg-[#c8b89a]",
+    "bg-[#7d7468]",
+    "bg-[#3a3330]",
+    "bg-[#8b6914]"
+  ],
+  "TAB_DESCRIPTIONS": {
+    "floors": "The Simple Solution Carpet Collection features a vast array of patterns, textures, cables, shags, friezes, and velvets, with great style options without compromising their budget!",
+    "walls": "Your home is a curated collection of your life, both past and present. Let our tile and stone blur the lines between Old and New with stunning wood grain visuals for any era. Affordable ceramic tile featuring a natural weathered hardwood Plank visual.",
+    "rugs": null,
+    "countertops": null
+  },
+  "TAB_COLOR_LABELS": {
+    "floors": "Color",
+    "rugs": "Size",
+    "countertops": "Color",
+    "walls": "Color"
+  }
+}

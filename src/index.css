@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+
+:root {
+  --primary-text-color: #373737;
+  --primary-text-heading-color: #0c0c0c;
+  --secondary-text-color: #ffffff;
+  --ternary-text-color: #525252;
+  --button-bg: #2b6a0a;
+}
+
+@keyframes nav-arrow {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer utility {
+  .animate-nav-arrow {
+    animation: nav-arrow 1.2s ease-in-out infinite;
+  }
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out both;
+  }
+}
+
+/* ── Chat bubble backgrounds ─────────────────────────────────────────────── */
+.bg-bubble-received {
+  background-color: #e8e8e8;
+}
+
+.bg-bubble-sent {
+  background-color: #d1d5db;
+}
+
+/* ── Chat scrollbar ──────────────────────────────────────────────────────── */
+.scrollbar-light {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+
+.scrollbar-light::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-light::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-light::-webkit-scrollbar-thumb {
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+}
+
+/* ── Poppins font utility ─────────────────────────────────────────────────── */
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+button{
+  cursor: pointer;
+}
