@@ -65,5 +65,6 @@ export function removeProduct(id) {
 /** Pull a product array out of different API response shapes (admin lists). */
 export function normalizeProductList(data) {
   const raw = data?.items ?? data?.data ?? data?.products ?? data;
-  return Array.isArray(raw) ? raw : [];
+  const items = Array.isArray(raw) ? raw : [];
+  return items.map(normalizePublicProduct);
 }

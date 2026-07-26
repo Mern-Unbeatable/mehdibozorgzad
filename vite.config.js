@@ -14,8 +14,6 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
-        // Backend sets Cross-Origin-Resource-Policy: same-origin on uploads,
-        // so browsers block cross-origin <img> tags from localhost.
         '/uploads': {
           target: apiTarget,
           changeOrigin: true,
@@ -27,6 +25,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     server: {
+      proxy,
+    },
+    preview: {
       proxy,
     },
   }
