@@ -5,12 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const apiTarget = env.VITE_API_BASE_URL || 'https://mehdibackend.maktechgroup.tech'
+  const apiTarget = env.VITE_API_BASE_URL?.replace(/\/$/, '')
 
-  return {
-    plugins: [react(), tailwindcss()],
-    server: {
-      proxy: {
+  const proxy = apiTarget
+    ? {
         '/api': {
           target: apiTarget,
           changeOrigin: true,
@@ -23,7 +21,13 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
-      },
+      }
+    : undefined
+
+  return {
+    plugins: [react(), tailwindcss()],
+    server: {
+      proxy,
     },
   }
 })

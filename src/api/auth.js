@@ -31,10 +31,10 @@ export async function loginUser(email, password) {
 
   if (error) return { success: false, error };
 
-  const user = data?.user ?? data;
+  const user = data?.user ?? data?.admin ?? data;
   const token = data?.token ?? data?.accessToken;
 
-  if (!token || !user) {
+  if (!token || !user?.email) {
     return { success: false, error: 'Invalid login response from server.' };
   }
 

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ROUTES } from '../../config';
+import { fetchAllPublicProducts, fetchProductById } from '../../api/products';
 import FlooringCatalogSection from './sections/FlooringCatalogSection';
 import FlooringProductDetailSection from './sections/FlooringProductDetailSection';
 
@@ -12,8 +13,6 @@ import Pagination from './Pagination';
 import flooringData from './data/flooringData.json';
 
 const {
-  MOCK_PRODUCTS,
-  PRODUCT_ATTRIBUTES,
   TAB_FILTER_CONFIG,
   CATEGORY_TABS,
   FLOOR_SWATCHES,
@@ -22,7 +21,7 @@ const {
   TAB_COLOR_LABELS,
 } = flooringData;
 
-const VALID_TABS = new Set(Object.keys(MOCK_PRODUCTS));
+const VALID_TABS = new Set(CATEGORY_TABS.map((tab) => tab.id));
 
 const getInitialFilters = (tabId) =>
   Object.fromEntries((TAB_FILTER_CONFIG[tabId] || []).map((g) => [g.id, []]));
@@ -30,63 +29,17 @@ const getInitialFilters = (tabId) =>
 const PAGE_SIZE = 9;
 
 function getProductSpecs(product, tab) {
+  if (product?.specRows?.length) return product.specRows;
+
   if (tab === 'floors') {
     return [
       ['Product Highlights', 'Polyester'],
-      ['SKU', 'SS' + product.id.slice(1).padStart(4, '0') + '57'],
+      ['SKU', '—'],
       ['Category', 'Carpet'],
-      ['Construction', 'Texture'],
-      ['Fiber', '100%PET Polyester'],
-      ['Color Family', 'Brown'],
-      ['Shade', 'Medium'],
-      ['Material', 'Broadloom'],
-      ['Residential', 'Yes'],
-      ['Warranty', '60 Day Warranty'],
     ];
   }
-  if (tab === 'rugs') {
-    return [
-      ['Product Highlights', "8' x 10'"],
-      ['SKU', 'DPR8460NQ0863'],
-      ['Collection', 'Neutral Jute'],
-      ['Category', 'Area Rugs'],
-      ['Color Family', 'Beige'],
-      ['Shade', 'Light'],
-      ['Shape', 'Rectangle'],
-    ];
-  }
-  if (tab === 'countertops') {
-    return [
-      ['SKU', 'CM08L64127MT328'],
-      ['Collection', 'Panoramic Porcelain Surfaces'],
-      ['Category', 'Porcelain Slab'],
-      ['Product Look', 'Slab'],
-      ['Species', 'Elemental Selection'],
-      ['Color Family', 'White'],
-      ['Shade', 'Light'],
-      ['Material', 'Matte'],
-      ['Shape', 'Slab'],
-      ['Series', 'Elemental Selection'],
-      ['Thickness', '12MM'],
-    ];
-  }
-  return [
-    ['SKU', 'HSTO304'],
-    ['Category', 'Tile & Stone'],
-    ['Color Family', 'Beige'],
-    ['Shade', 'Light'],
-    ['Material', 'Ceramic'],
-    ['Residential Use', 'Yes'],
-    ['Warranty', '60 Day Warranty'],
-    ['Thickness', '5.0'],
-  ];
-}
 
-function getProductColorValue(tab) {
-  if (tab === 'rugs') return "8' x 10'";
-  if (tab === 'countertops') return 'Statuario';
-  if (tab === 'walls') return 'Fine China';
-  return 'Pier Walk';
+  return [['SKU', '—']];
 }
 
 const FlooringContent = () => {
@@ -103,11 +56,45 @@ const FlooringContent = () => {
   const [filters, setFilters] = useState(() => getInitialFilters(activeTab));
   const [currentPage, setCurrentPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [catalogLoading, setCatalogLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [catalogProducts, setCatalogProducts] = useState([]);
+  const [selectedProductDetail, setSelectedProductDetail] = useState(null);
 
-  const selectedProduct = useMemo(() => {
-    if (!productId || !VALID_TABS.has(routeTab)) return null;
-    return (MOCK_PRODUCTS[routeTab] || []).find((product) => product.id === productId) ?? null;
-  }, [productId, routeTab]);
+  const productsByTab = useMemo(() => {
+    const grouped = { floors: [], rugs: [], countertops: [], walls: [] };
+
+    catalogProducts.forEach((product) => {
+      if (grouped[product.tab]) grouped[product.tab].push(product);
+    });
+
+    return grouped;
+  }, [catalogProducts]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadCatalog = async () => {
+      setCatalogLoading(true);
+      const { data, error } = await fetchAllPublicProducts();
+
+      if (!active) return;
+
+      if (error) {
+        setCatalogProducts([]);
+      } else {
+        setCatalogProducts(data);
+      }
+
+      setCatalogLoading(false);
+    };
+
+    loadCatalog();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     setFilters(getInitialFilters(activeTab));
@@ -115,10 +102,44 @@ const FlooringContent = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    if (productId && routeTab && !selectedProduct) {
+    if (!productId) {
+      setSelectedProductDetail(null);
+      setDetailLoading(false);
+      return;
+    }
+
+    let active = true;
+
+    const loadDetail = async () => {
+      setDetailLoading(true);
+      const { data, error } = await fetchProductById(productId);
+
+      if (!active) return;
+
+      if (error) {
+        const fallback = catalogProducts.find((product) => product.id === productId) ?? null;
+        setSelectedProductDetail(fallback);
+      } else {
+        setSelectedProductDetail(data);
+      }
+
+      setDetailLoading(false);
+    };
+
+    loadDetail();
+
+    return () => {
+      active = false;
+    };
+  }, [productId, catalogProducts]);
+
+  const selectedProduct = selectedProductDetail;
+
+  useEffect(() => {
+    if (productId && routeTab && !detailLoading && !selectedProduct) {
       navigate(`${ROUTES.FLOORING}?tab=${activeTab}`, { replace: true });
     }
-  }, [activeTab, navigate, productId, routeTab, selectedProduct]);
+  }, [activeTab, detailLoading, navigate, productId, routeTab, selectedProduct]);
 
   const handleSelectProduct = useCallback(
     (product) => {
@@ -133,13 +154,8 @@ const FlooringContent = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab, navigate]);
 
-  const loading = false;
-  const allTabProducts = MOCK_PRODUCTS[activeTab] || [];
+  const allTabProducts = productsByTab[activeTab] || [];
   const filterGroups = TAB_FILTER_CONFIG[activeTab] || [];
-
-  const getBrandId = useCallback((brandName) => {
-    return brandName ? brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') : '';
-  }, []);
 
   const filteredProducts = useMemo(() => {
     return allTabProducts.filter((product) => {
@@ -147,21 +163,14 @@ const FlooringContent = () => {
         const selectedOptions = filters[group.id] || [];
         if (selectedOptions.length === 0) continue;
 
-        let productValue = '';
-        if (group.id === 'brand') {
-          productValue = getBrandId(product.brand);
-        } else {
-          const attrs = PRODUCT_ATTRIBUTES[product.id] || {};
-          productValue = attrs[group.id] || '';
-        }
-
-        if (!selectedOptions.includes(productValue)) {
+        const productValue = product.filterValues?.[group.id] ?? '';
+        if (!productValue || !selectedOptions.includes(productValue)) {
           return false;
         }
       }
       return true;
     });
-  }, [allTabProducts, filterGroups, filters, getBrandId]);
+  }, [allTabProducts, filterGroups, filters]);
 
   const total = filteredProducts.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -200,19 +209,26 @@ const FlooringContent = () => {
     0,
   );
 
+  if (detailLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <p className="text-center font-['Lato'] text-[#696664]">Loading product...</p>
+      </div>
+    );
+  }
+
   if (selectedProduct) {
     return (
       <FlooringProductDetailSection
         product={selectedProduct}
         tab={activeTab}
-        allTabProducts={MOCK_PRODUCTS[activeTab] || []}
+        allTabProducts={allTabProducts}
         onBack={handleBack}
         onSelect={handleSelectProduct}
         ProductCard={ProductCard}
         getProductSpecs={getProductSpecs}
         tabDescriptions={TAB_DESCRIPTIONS}
         tabColorLabels={TAB_COLOR_LABELS}
-        getProductColorValue={getProductColorValue}
         floorSwatches={FLOOR_SWATCHES}
         wallSwatches={WALL_SWATCHES}
       />
@@ -230,7 +246,7 @@ const FlooringContent = () => {
       categoryTabs={CATEGORY_TABS}
       activeTab={activeTab}
       onTabChange={handleTabChange}
-      loading={loading}
+      loading={catalogLoading}
       products={products}
       pageSize={PAGE_SIZE}
       onSelectProduct={handleSelectProduct}

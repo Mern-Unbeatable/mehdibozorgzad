@@ -30,6 +30,7 @@ const ProductCard = memo(({ product, onSelect, tab }) => {
           alt={product.name}
           className="absolute inset-0 w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          referrerPolicy="no-referrer"
         />
         <button
           type="button"

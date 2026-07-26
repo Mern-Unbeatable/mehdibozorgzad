@@ -18,7 +18,6 @@ const FlooringProductDetailSection = memo(
     getProductSpecs,
     tabDescriptions,
     tabColorLabels,
-    getProductColorValue,
     floorSwatches,
     wallSwatches,
   }) => {
@@ -34,18 +33,15 @@ const FlooringProductDetailSection = memo(
       .filter((item) => item.id !== product.id)
       .slice(0, tab === 'floors' ? 4 : 3);
 
-    const thumbImages = [
-      product.image,
-      ...allTabProducts
-        .filter((item) => item.id !== product.id)
-        .slice(0, 5)
-        .map((item) => item.image),
-    ];
+    const thumbImages =
+      product.images?.length > 0
+        ? product.images
+        : [product.image].filter(Boolean);
 
-    const specs = getProductSpecs(product, tab);
-    const description = tabDescriptions[tab];
+    const specs = product.specRows?.length ? product.specRows : getProductSpecs(product, tab);
+    const description = product.description || tabDescriptions[tab];
     const colorLabel = tabColorLabels[tab];
-    const colorValue = getProductColorValue(tab);
+    const colorValue = product.primaryColor || product.colors?.[0] || '—';
 
     const showFloorSwatches = tab === 'floors';
     const showWallSwatches = tab === 'walls';
@@ -86,7 +82,7 @@ const FlooringProductDetailSection = memo(
               <div className="flex flex-wrap gap-2">
                 {thumbImages.slice(0, 6).map((src, index) => (
                   <button
-                    key={index}
+                    key={`${src}-${index}`}
                     type="button"
                     onClick={() => setActiveThumb(index)}
                     className={`h-24 w-24 shrink-0 overflow-hidden rounded-xl border-2 transition-colors ${
@@ -179,7 +175,7 @@ const FlooringProductDetailSection = memo(
             </div>
           </div>
 
-          {description && (
+          {product.description && (
             <div className="mb-12 flex flex-col gap-6">
               <h2 className="font-['Playfair_Display'] text-[32px] font-semibold leading-tight text-[#0d0b0a]">
                 Product Description
